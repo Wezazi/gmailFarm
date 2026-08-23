@@ -1,11 +1,10 @@
 import asyncio
 import random
 import string
-from playwright.async_api import async_playwright, Playwright
+from cloakbrowser import launch_async
 
-async def run(playwright: Playwright):
-    chromium = playwright.chromium
-    browser = await chromium.launch(headless=False, args=["--start-maximized"])
+async def run():
+    browser = await launch_async(headless=False, args=["--start-maximized"])
     page = await browser.new_page(no_viewport=True)
     await page.goto("https://accounts.google.com")
     
@@ -63,7 +62,7 @@ async def run(playwright: Playwright):
     await page.locator("div#next").click()
     await page.locator('[aria-label="Password"]').fill(password) # await page.locator('[aria-label="Confirm"]').fill(password) is better than await page.get_by_label("Password").fill(password) because aria-label="Confirm" ONLY filters for a matching aria-label while get_by_label filters for any type of lable, including aria-labelledby. Why is filtering by all labels bad? because we want to narrow down the filtering to the specific target element, get_by_label matched with an additional element.  
     await page.locator('[aria-label="Confirm"]').fill(password)
-    
+    await page.locator("div#createpasswordNext").click()
     
     
     
@@ -74,7 +73,6 @@ async def run(playwright: Playwright):
     await browser.close()
 
 async def main():
-    async with async_playwright() as playwright:
-        await run(playwright)
+    await run()
 
 asyncio.run(main())
