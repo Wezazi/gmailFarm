@@ -1,10 +1,17 @@
 import asyncio
 import random
 import string
+import os
 from cloakbrowser import launch_async
 
 async def run():
-    browser = await launch_async(headless=False, args=["--start-maximized"])
+    browser = await launch_async(
+        headless=False, 
+        args=["--start-maximized"],
+        license_key = os.environ["CLOAKBROWSER_LICENSE_KEY"],
+        humanize=True,
+        human_preset='careful'
+    )
     page = await browser.new_page(no_viewport=True)
     await page.goto("https://accounts.google.com")
     
